@@ -2,6 +2,7 @@
 import mysql.connector
 from config import DB_CONFIG
 from datetime import datetime
+from service import random_numbers, guessA
 
 class GameModel:
     def __init__(self):
@@ -9,7 +10,7 @@ class GameModel:
         self.cursor = self.conn.cursor(dictionary=True)
 
     def add_game(self):
-        random = '1:2:3:4'
+        random = random_numbers()
         sql = "INSERT INTO Game (Answer) VALUES (%s)"
         self.cursor.execute(sql, (random,))
         self.conn.commit()
@@ -29,12 +30,24 @@ class RoundModel:
         self.cursor = self.conn.cursor(dictionary=True)
 
     def add_round(self, gameId, guess):
-        time = datetime.now()
+        sql = "SELECT Answer FROM Game WHERE GameId = %s"
+        self.cursor.execute(sql, (gameId,))
+        row = self.cursor.fetchone()
+        answer = row['Answer']
+
+        round = guessA(guess, answer)
         sql = "INSERT INTO Round (GameId, Guess) VALUES (%s, %s)"
-        self.cursor.execute(sql, (gameId, guess))
+        self.cursor.execute(sql, (gameId, round))
         self.conn.commit()
-        return self.cursor.lastrowid
+        roundId = self.cursor.lastrowid
+
+        if (round == 'e:e:e:e'):
+            sql = "UPDATE Game SET Status = 0 WHERE GameId = %s;"
+            self.cursor.execute(sql, (gameId,))
+            self.conn.commit()
+
+        return roundId
     
     def get_rounds(self, gameId):
             self.cursor.execute("SELECT * FROM Round WHERE GameId = %s", (gameId,))
-            return self.cursor.fetchone()
+            return self.cursor.fetchall()
