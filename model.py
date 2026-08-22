@@ -22,7 +22,9 @@ class GameModel:
 
     def get_game(self, gameId):
         self.cursor.execute("SELECT * FROM Game WHERE GameId = %s", (gameId,))
-        return self.cursor.fetchone()
+        result = self.cursor.fetchone()
+        self.conn.commit()
+        return result
 
 class RoundModel:
     def __init__(self):

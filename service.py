@@ -1,13 +1,10 @@
 import random
 
 def random_numbers():
-    answer = ''
-    for i in range(4):
-        num = random.randrange(0, 9)
-        answer += str(num)
-        if (i != 3):
-            answer += ':'
-    return answer
+    digits = list('0123456789')
+    random.shuffle(digits)
+    chosen = digits[:4]
+    return ':'.join(chosen)
 
 def guessA(guess, answer):
     round = ''

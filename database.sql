@@ -16,12 +16,17 @@ Guess VARCHAR(7) NOT NULL,
 Time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY (GameId) REFERENCES Game(GameId)
 );
-
+/*
 INSERT INTO Game (Answer) values ('1:2:3:4');
 SELECT * FROM Game;
 
-INSERT INTO Round (GameId, Guess) values (1, '1:2:3:4');
+INSERT INTO Round (GameId, Guess) values (1, 'p:p:p:p');
 SELECT * FROM Round;
 
 SELECT * FROM Round
-WHERE GameId = 1;
+JOIN Game ON Game.GameId = Round.GameId;
+
+UPDATE Game
+SET Status = 0
+WHERE GameId = 2;
+*/
